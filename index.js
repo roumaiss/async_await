@@ -1,7 +1,4 @@
 // Task 1 :
-async function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 async function iterateWithAsyncAwait(values) {
   for (const value of values) {
@@ -16,8 +13,12 @@ iterateWithAsyncAwait([6, 9, 3, 8, 2, 1]);
 //   Task 2
 
 async function awaitCall() {
-  const response = await fetch("https://api.jikan.moe/v4/anime/1");
-  const data = await response.json();
+  const fetchData = new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ message: "API data received successfully" });
+    }, 2000); // Simulated delay of 2 seconds
+  });
+  const data = await fetchData;
   console.log(data);
 }
 
@@ -26,22 +27,19 @@ awaitCall();
 // Task 3 :
 async function awaitCall() {
   try {
-    const response = await fetch(
-      "http://api.anidb.net:9001/httpapi?request=anime"
-    );
+    const fetchData = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ message: "API data received successfully" });
+      }, 2000); // Simulated delay of 2 seconds
+    });
 
-    if (!response.ok) {
-      throw new Error(`API call failed with status: ${response.status}`);
-    }
+    // Await the response before checking for errors
+    const data = await fetchData;
 
-    const data = await response.json();
+    // No .ok or .status on manually created Promise, so remove that check
     console.log(data);
   } catch (error) {
-    if (error instanceof TypeError) {
-      console.error("Network error or invalid URL:", error.message);
-    } else {
-      console.error("An unexpected error occurred:", error.message);
-    }
+    console.error("An unexpected error occurred:", error.message);
   }
 }
 
